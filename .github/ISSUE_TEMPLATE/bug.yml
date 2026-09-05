@@ -1,0 +1,40 @@
+name: Поломка
+description: Команда делает не то, что обещает
+labels: [поломка]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Если это дыра в безопасности, не пишите сюда: help@autopasha.ru.
+        Ключ (`ap_live_…`) в текст не вставляйте, замените на многоточие.
+  - type: textarea
+    id: what
+    attributes:
+      label: Что произошло
+      description: Команда целиком и что она ответила
+      placeholder: |
+        $ autopasha status
+        Ошибка: …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Чего вы ждали
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Версия
+      description: вывод `autopasha --version`
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node и система
+      placeholder: Node 22.11 на macOS 15
+    validations:
+      required: true

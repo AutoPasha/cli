@@ -1,0 +1,8 @@
+version: 2
+updates:
+  # Пакетных зависимостей у нас нет и не будет, следим только за экшенами:
+  # именно они устаревают молча и однажды перестают запускаться.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

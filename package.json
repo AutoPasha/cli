@@ -1,0 +1,50 @@
+{
+  "name": "@autopasha/cli",
+  "version": "0.1.0",
+  "description": "Командная строка АвтоПаши: чем занят AI-сотрудник, поставить ему задачу, ответить на его вопрос",
+  "keywords": [
+    "autopasha",
+    "автопаша",
+    "ai-agent",
+    "agent",
+    "claude",
+    "cli",
+    "skill"
+  ],
+  "homepage": "https://autopasha.ru/docs/api",
+  "bugs": {
+    "url": "https://github.com/AutoPasha/cli/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AutoPasha/cli.git"
+  },
+  "license": "MIT",
+  "author": "АвтоПаша <help@autopasha.ru> (https://autopasha.ru)",
+  "type": "module",
+  "bin": {
+    "autopasha": "bin/autopasha.mjs"
+  },
+  "exports": {
+    ".": "./src/cli.mjs",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "bin",
+    "src",
+    "skill",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "pack:check": "npm pack --dry-run"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

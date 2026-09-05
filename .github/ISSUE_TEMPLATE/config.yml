@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Вопрос про сам сервис, тариф или доступ в кабинет
+    url: https://autopasha.ru
+    about: Это не про пакет — напишите нам на help@autopasha.ru
+  - name: Справочник API
+    url: https://autopasha.ru/docs/api
+    about: Ручки, права ключа, коды ошибок

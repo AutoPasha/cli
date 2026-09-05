@@ -1,0 +1,27 @@
+name: Публикация в npm
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # без этого не выдаётся provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: https://registry.npmjs.org
+      - run: npm test
+      # Publish с provenance: npm подписывает пакет и показывает на странице,
+      # из какого коммита он собран. Для пакета, который люди ставят глобально
+      # и дают агенту, это единственный способ доказать происхождение.
+      - run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

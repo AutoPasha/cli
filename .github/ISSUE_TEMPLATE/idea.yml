@@ -1,0 +1,17 @@
+name: Предложение
+description: Чего команде не хватает
+labels: [предложение]
+body:
+  - type: textarea
+    id: case
+    attributes:
+      label: Что вы делали, когда упёрлись
+      description: Задача целиком, а не только желаемый флаг. Часто решение оказывается другим.
+    validations:
+      required: true
+  - type: textarea
+    id: now
+    attributes:
+      label: Как обходитесь сейчас
+    validations:
+      required: false
