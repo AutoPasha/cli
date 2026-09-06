@@ -13,15 +13,29 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
           registry-url: https://registry.npmjs.org
       - run: npm test
+      # Версия могла уехать в реестр раньше релиза — тогда publish упал бы с 403
+      # и покрасил бы прогон, хотя делать было нечего. Спрашиваем реестр и молча
+      # пропускаем: релиз на уже выложенную версию — обычное дело, а не поломка.
+      - name: версия уже в реестре?
+        id: registry
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if npm view "@autopasha/cli@$version" version > /dev/null 2>&1; then
+            echo "@autopasha/cli@$version уже опубликован — публиковать нечего"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
       # Publish с provenance: npm подписывает пакет и показывает на странице,
       # из какого коммита он собран. Для пакета, который люди ставят глобально
       # и дают агенту, это единственный способ доказать происхождение.
-      - run: npm publish --provenance --access public
+      - if: steps.registry.outputs.skip == 'false'
+        run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -10,22 +10,30 @@ AI-сотрудник, ему можно поставить задачу, отв
 [![license](https://img.shields.io/npm/l/@autopasha/cli?color=0b7285)](LICENSE)
 [![без зависимостей](https://img.shields.io/badge/зависимостей-0-0b7285)](package.json)
 
+![autopasha status](https://raw.githubusercontent.com/AutoPasha/cli/main/docs/screenshots/status.png)
+
+<details>
+<summary>то же самое текстом</summary>
+
 ```console
 $ autopasha status
-Паша — работает с 13:54 · разбирает отклики на hh
+Паша — работает с 09:29 · разбирает отклики на hh
 Ждут вас: 1 · решится само: 2 · всего: 3
 
 Вопросы:
   8f2ac1b0-2f5e-4a11-9a6b-6c0f5a1d2e34
     Покупать прокси за 300 ₽/мес или пробуем без него?
-    молчание значит «возьму бесплатный вариант», до 16:54
+    молчание значит «возьму бесплатный вариант», до 11:09
 
 Ответить: autopasha answer <id> да --comment "…"
 
 Последнее:
-  13:46  отчёт  12 откликов разобраны, 3 ответа отправлены
-  13:02  задача  Отклики на hh за неделю
+  09:59  отчёт  12 откликов разобраны, 3 ответа отправлены
+  09:15  задача  Отклики на hh за неделю
+  08:31  выкат  Карточка услуги обновлена
 ```
+
+</details>
 
 ## Зачем это
 
@@ -38,25 +46,20 @@ $ autopasha status
 Эта команда убирает пересказ. Ваш агент сам смотрит, чем занят сотрудник, сам
 ставит ему задачу и сам отвечает на его вопрос, когда ответ у него уже есть.
 
-## Установка
+## Быстрый старт
 
-Разово, без установки:
+Три шага, минута с небольшим. Нужен Node.js 20 или новее, зависимостей у пакета
+нет.
 
-```bash
-npx @autopasha/cli status
-```
-
-Постоянно:
+**1. Поставить.** Разово, без установки, или насовсем:
 
 ```bash
-npm i -g @autopasha/cli
+npx @autopasha/cli status      # разово
+npm i -g @autopasha/cli        # насовсем
 ```
 
-Нужен Node.js 20 или новее. Зависимостей у пакета нет.
-
-## Первый запуск
-
-Ключ заводится в кабинете, раздел «API». Он выглядит как `ap_live_` и 32 знака.
+**2. Принять ключ.** Он заводится в кабинете, раздел «API», и выглядит как
+`ap_live_` и 32 знака:
 
 ```bash
 autopasha login --token ap_live_...
@@ -67,6 +70,19 @@ autopasha login --token ap_live_...
 
 ```bash
 export AUTOPASHA_TOKEN=ap_live_...
+```
+
+**3. Посмотреть, чем занят сотрудник:**
+
+```bash
+autopasha status
+```
+
+Дальше по вкусу: поставить задачу (`ask`), ответить на вопрос (`answer`),
+дождаться отчёта (`watch`). Своему агенту отдать умение одной строкой:
+
+```bash
+npx @autopasha/cli skill > .claude/skills/autopasha/SKILL.md
 ```
 
 ## Команды
@@ -88,6 +104,8 @@ export AUTOPASHA_TOKEN=ap_live_...
 ## Примеры
 
 Поставить задачу и дождаться, чем кончилось:
+
+![autopasha ask и watch](https://raw.githubusercontent.com/AutoPasha/cli/main/docs/screenshots/ask-watch.png)
 
 ```bash
 autopasha ask "посмотри отклики на hh и ответь тем, кто по делу" \
