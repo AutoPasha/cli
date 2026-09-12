@@ -7,7 +7,9 @@ on:
 
 permissions:
   contents: read
-  id-token: write # без этого не выдаётся provenance
+  # Без этого не выдаётся provenance, и по нему же npm пускает публиковать
+  # без токена: короткий ключ у GitHub вместо долгоживущего секрета.
+  id-token: write
 
 jobs:
   publish:
@@ -16,8 +18,12 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version: '22'
+          node-version: '24'
           registry-url: https://registry.npmjs.org
+      # Вход по OIDC (trusted publishing) умеет npm начиная с 11.5.1. В образе
+      # node 24 npm свежий, но версию ставим явно: от неё зависит, пойдёт
+      # публикация без токена или сорвётся обратно на секрет.
+      - run: npm i -g npm@^11.5.1
       - run: npm test
       # Версия могла уехать в реестр раньше релиза — тогда publish упал бы с 403
       # и покрасил бы прогон, хотя делать было нечего. Спрашиваем реестр и молча
@@ -35,6 +41,10 @@ jobs:
       # Publish с provenance: npm подписывает пакет и показывает на странице,
       # из какого коммита он собран. Для пакета, который люди ставят глобально
       # и дают агенту, это единственный способ доказать происхождение.
+      #
+      # NODE_AUTH_TOKEN тут запасной путь. Когда у пакета будет прописан
+      # доверенный издатель, npm сам возьмёт ключ у GitHub и токен не тронет;
+      # прямую публикацию токеном npm отключает в январе 2027.
       - if: steps.registry.outputs.skip == 'false'
         run: npm publish --provenance --access public
         env:
