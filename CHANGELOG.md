@@ -5,6 +5,15 @@
 
 ## [Не выпущено]
 
+## [0.1.1] - 2026-09-12
+
+### Изменено
+
+- В пакет уехал переписанный README: быстрый старт, снимки терминала с живым
+  выводом, кодекс общения.
+- Публикация идёт из GitHub Actions по OIDC: npm берёт короткий ключ у GitHub,
+  долгоживущий токен в реестр больше не отправляется.
+
 ## [0.1.0] - 2026-09-05
 
 Первый выпуск.
@@ -19,5 +28,6 @@
   которые что-то меняют.
 - Умение для агента: `autopasha skill`.
 
-[Не выпущено]: https://github.com/AutoPasha/cli/compare/v0.1.0...HEAD
+[Не выпущено]: https://github.com/AutoPasha/cli/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/AutoPasha/cli/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/AutoPasha/cli/releases/tag/v0.1.0
