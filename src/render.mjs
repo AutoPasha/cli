@@ -40,6 +40,14 @@ export function renderStatus(s, now = new Date()) {
     for (const q of s.questions) {
       out.push(`  ${q.id}`);
       out.push(`    ${q.question}`);
+      // Варианты и поле печатаем всегда, когда они есть: без них ответ на такой
+      // вопрос отбивается сервером, а догадаться, чего он хочет, не по чему.
+      for (const o of q.options ?? []) {
+        out.push(`    — ${o.label}${o.hint ? ` (${o.hint})` : ''}`);
+      }
+      if (q.input) {
+        out.push(`    нужно ${q.input.required ? 'заполнить' : 'значение'}: ${q.input.label} → --comment`);
+      }
       const tail = [];
       if (q.ifSilent) tail.push(`молчание значит «${q.ifSilent}»`);
       else tail.push('без ответа встанет');
@@ -47,6 +55,9 @@ export function renderStatus(s, now = new Date()) {
       out.push(`    ${tail.join(', ')}`);
     }
     out.push('', 'Ответить: autopasha answer <id> да --comment "…"');
+    if (s.questions.some((q) => q.options?.length)) {
+      out.push('Вопрос с вариантами — вариант надо назвать: autopasha answer <id> да --option "надпись"');
+    }
   }
 
   if (s.recent?.length) {
