@@ -75,6 +75,61 @@ test('status показывает состояние, вопросы и как �
   assert.match(text, /autopasha answer <id> да/);
 });
 
+test('status показывает варианты ответа и поле, без которых вопрос не ответить', async () => {
+  const env = await sandbox();
+  const out = collect();
+  const code = await run(['status'], {
+    env: { ...env, AUTOPASHA_TOKEN: 'ap_live_test' },
+    out: out.write,
+    err: out.write,
+    client: {
+      status: async () => ({
+        employee: { name: 'Паша', state: 'работает' },
+        waiting: { onOwner: 2, selfResolving: 0, total: 2 },
+        questions: [
+          {
+            id: 'q-1',
+            question: 'Куда писать?',
+            options: [
+              { label: 'на общий ящик', decision: 'approved', hint: 'быстрее' },
+              { label: 'искать личные', decision: 'approved' },
+            ],
+          },
+          { id: 'q-2', question: 'Код из СМС', input: { label: 'код из СМС', kind: 'number', required: true } },
+        ],
+        recent: [],
+      }),
+    },
+  });
+  assert.equal(code, 0);
+  const text = out.text();
+  assert.match(text, /— на общий ящик \(быстрее\)/);
+  assert.match(text, /— искать личные/);
+  assert.match(text, /нужно заполнить: код из СМС/);
+  // Подсказка про вариант появляется только тогда, когда вариант где-то есть.
+  assert.match(text, /--option "надпись"/);
+});
+
+test('answer передаёт выбранный вариант, а решение по нему считает сервер', async () => {
+  const env = await sandbox();
+  const out = collect();
+  let got;
+  const code = await run(['answer', 'q-1', 'да', '--option', 'на общий ящик'], {
+    env: { ...env, AUTOPASHA_TOKEN: 'ap_live_test' },
+    out: out.write,
+    err: out.write,
+    client: {
+      answer: async (id, body) => {
+        got = { id, body };
+        return { id, decision: body.decision };
+      },
+    },
+  });
+  assert.equal(code, 0);
+  assert.deepEqual(got, { id: 'q-1', body: { decision: 'approved', option: 'на общий ящик' } });
+  assert.match(out.text(), /Ответ записан: да — на общий ящик/);
+});
+
 test('feed --since 2h отсекает старое на нашей стороне, курсор не выдумывает', async () => {
   const env = await sandbox();
   const out = collect();

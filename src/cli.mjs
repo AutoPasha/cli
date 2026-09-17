@@ -20,7 +20,7 @@ const HELP = `autopasha — командная строка АвтоПаши.
   autopasha status                      чем занят сотрудник, что стоит, что спрашивает
   autopasha feed [--since 2h]           что произошло
   autopasha ask "текст" [--why "…"]     поставить задачу
-  autopasha answer <id> да|нет [--comment "…"]   ответить на вопрос
+  autopasha answer <id> да|нет [--comment "…"] [--option "вариант"]   ответить на вопрос
   autopasha say "текст"                 реплика в разговор
   autopasha watch [--since 1h]          ждать событий и печатать их построчно
   autopasha skill                       напечатать умение для своего агента
@@ -184,12 +184,19 @@ async function cmdAnswer({ client, args, opts, out }) {
   const [id, word] = args;
   if (!id) throw new UsageError('нужен id вопроса: autopasha answer <id> да');
   const decision = parseDecision(word);
-  const res = await client.answer(id, { decision, comment: opts.comment }, opts['idempotency-key']);
+  // `--option` — надпись варианта, если сотрудник их предложил. Смысл выбора
+  // («да» это или «нет») считает сервер по своей записи вопроса, мы передаём
+  // только надпись: вопрос про прод не должен переписываться из терминала.
+  const body = { decision };
+  if (opts.comment) body.comment = opts.comment;
+  if (opts.option) body.option = opts.option;
+  const res = await client.answer(id, body, opts['idempotency-key']);
   if (opts.json) {
     out(JSON.stringify(res, null, 2));
     return 0;
   }
-  out(`Ответ записан: ${decision === 'approved' ? 'да' : 'нет'}${opts.comment ? ` — ${opts.comment}` : ''}`);
+  const said = [opts.option, opts.comment].filter(Boolean).join(' — ');
+  out(`Ответ записан: ${decision === 'approved' ? 'да' : 'нет'}${said ? ` — ${said}` : ''}`);
   out('Сотрудник разбужен и вернётся к этому делу.');
   return 0;
 }
